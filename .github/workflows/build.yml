@@ -1,16 +1,6 @@
 name: Build APK
 
 on:
-  push:
-    branches:
-      - master
-      - main
-    paths-ignore:
-      - '**.md'
-      - '**/ISSUE_TEMPLATE/**'
-  pull_request:
-    paths-ignore:
-      - '**.md'
   workflow_dispatch:
 
 concurrency:
@@ -31,9 +21,28 @@ jobs:
           distribution: 'temurin'
           java-version: 17
 
+      # 缓存 Gradle 依赖和 wrapper
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches/
+            ~/.gradle/wrapper/
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # 缓存 Cronet 下载文件
+      - name: Cache Cronet
+        uses: actions/cache@v4
+        with:
+          path: |
+            app/cronetlib/
+            app/so/
+          key: ${{ runner.os }}-cronet-${{ hashFiles('gradle.properties') }}
+
       - name: Clear 18PlusList.txt
-        run: |
-          echo "" > $GITHUB_WORKSPACE/app/src/main/assets/18PlusList.txt
+        run: echo "" > $GITHUB_WORKSPACE/app/src/main/assets/18PlusList.txt
 
       - name: Setup signing config
         run: |
@@ -45,6 +54,8 @@ jobs:
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
 
       - name: Build release APK
         run: |
