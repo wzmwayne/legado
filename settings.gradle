@@ -10,11 +10,11 @@ pluginManagement {
         //原仓库
         gradlePluginPortal()
         mavenCentral()
-        //镜像仓库,无法连接源仓库自行启用镜像仓库,不要提交修改
+        //镜像仓库
         //maven { url "https://maven-central-asia.storage-download.googleapis.com/maven2/" }
-        //maven { url 'https://maven.aliyun.com/repository/google' }
-        //maven { url 'https://maven.aliyun.com/repository/public' }
-        //maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
         //maven { url 'https://repo.huaweicloud.com/repository/maven/' }
     }
 }
@@ -22,23 +22,26 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        //镜像仓库
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
         //原仓库
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
+        //google {
+        //    content {
+        //        includeGroupByRegex("com\\.android.*")
+        //        includeGroupByRegex("com\\.google.*")
+        //        includeGroupByRegex("androidx.*")
+        //    }
+        //}
         maven {
             url 'https://jitpack.io'
             content {
                 includeGroupByRegex("com\\.github.*")
             }
         }
-        mavenCentral()
+        //mavenCentral()
 
-        //镜像仓库,无法连接源仓库自行启用镜像仓库,不要提交修改
+        //镜像仓库
         //maven { url "https://maven-central-asia.storage-download.googleapis.com/maven2/" }
         //maven { url 'https://maven.aliyun.com/repository/google' }
         //maven { url 'https://maven.aliyun.com/repository/public' }
