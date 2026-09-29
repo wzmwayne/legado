@@ -1,8 +1,8 @@
 allprojects {
     repositories {
-        // 国内镜像优先（阿里云）
-        maven { url = uri("https://maven.aliyun.com/repository/google") }
-        maven { url = uri("https://maven.aliyun.com/repository/public") }
+        // 实际请求由 scripts/gradle_mirror.gradle 重定向到阿里云镜像
+        google()
+        mavenCentral()
     }
 }
 

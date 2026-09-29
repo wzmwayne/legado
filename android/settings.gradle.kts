@@ -11,10 +11,10 @@ pluginManagement {
     includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
 
     repositories {
-        // 国内镜像优先（阿里云），全部依赖走国内源
-        maven { url = uri("https://maven.aliyun.com/repository/google") }
-        maven { url = uri("https://maven.aliyun.com/repository/public") }
-        maven { url = uri("https://maven.aliyun.com/repository/gradle-plugin") }
+        // 实际请求由 scripts/gradle_mirror.gradle 重定向到阿里云镜像
+        google()
+        mavenCentral()
+        gradlePluginPortal()
     }
 }
 

@@ -1,0 +1,40 @@
+// Gradle 镜像重定向：把 google() / mavenCentral() / gradlePluginPortal()
+// 的请求改写到阿里云镜像，保证依赖全部走国内源。
+//
+// 用法（由 scripts/mirror_env.sh 自动安装到 $GRADLE_USER_HOME/init.d/）：
+//   source scripts/mirror_env.sh
+//
+// 之所以用重定向而不是在 build.gradle.kts 里直接写 maven {}：
+// Flutter 自带的 included build（flutter_tools/gradle）设置了
+// RepositoriesMode.FAIL_ON_PROJECT_REPOS，显式声明 maven {} 会触发仓库模式冲突。
+
+def mirrors = [
+    'https://dl.google.com/dl/android/maven2': 'https://maven.aliyun.com/repository/google',
+    'https://repo.maven.apache.org/maven2': 'https://maven.aliyun.com/repository/public',
+    'https://plugins.gradle.org/m2': 'https://maven.aliyun.com/repository/gradle-plugin',
+]
+
+def redirect = { repositories ->
+    repositories.withType(MavenArtifactRepository).configureEach { repo ->
+        def current = repo.url.toString()
+        mirrors.each { from, to ->
+            if (current.startsWith(from)) {
+                repo.setUrl(to)
+            }
+        }
+    }
+}
+
+allprojects { project ->
+    redirect(project.repositories)
+    redirect(project.buildscript.repositories)
+}
+
+settingsEvaluated { settings ->
+    redirect(settings.pluginManagement.repositories)
+    try {
+        redirect(settings.dependencyResolutionManagement.repositories)
+    } catch (Exception ignored) {
+        // 旧版 Gradle 没有该扩展，忽略
+    }
+}
