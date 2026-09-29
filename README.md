@@ -1,110 +1,92 @@
-# [English](English.md) [中文](README.md)
+# 阅读
 
-[![icon_android](https://github.com/gedoor/gedoor.github.io/blob/master/static/img/legado/icon_android.png)](https://play.google.com/store/apps/details?id=io.legado.play.release)
-<a href="https://jb.gg/OpenSourceSupport" target="_blank">
-<img width="24" height="24" src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg?_gl=1*135yekd*_ga*OTY4Mjg4NDYzLjE2Mzk0NTE3MzQ.*_ga_9J976DJZ68*MTY2OTE2MzM5Ny4xMy4wLjE2NjkxNjMzOTcuNjAuMC4w&_ga=2.257292110.451256242.1669085120-968288463.1639451734" alt="idea"/>
-</a>
+多平台小说阅读器，使用 Flutter 重写。Android 与 Linux 桌面共用一套自适应界面，
+阅读器排版与交互尽量贴近原版体验，其余界面做简化还原。
 
-<div align="center">
-<img width="125" height="125" src="https://github.com/gedoor/legado/raw/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="legado"/>  
-  
-Legado / 开源阅读
-<br>
-<a href="https://gedoor.github.io" target="_blank">gedoor.github.io</a> / <a href="https://www.legado.top/" target="_blank">legado.top</a>
-<br>
-Legado is a free and open source novel reader for Android.
-</div>
+## 功能状态
 
-[![](https://img.shields.io/badge/-Contents:-696969.svg)](#contents) [![](https://img.shields.io/badge/-Function-F5F5F5.svg)](#Function-主要功能-) [![](https://img.shields.io/badge/-Community-F5F5F5.svg)](#Community-交流社区-) [![](https://img.shields.io/badge/-API-F5F5F5.svg)](#API-) [![](https://img.shields.io/badge/-Other-F5F5F5.svg)](#Other-其他-) [![](https://img.shields.io/badge/-Grateful-F5F5F5.svg)](#Grateful-感谢-) [![](https://img.shields.io/badge/-Interface-F5F5F5.svg)](#Interface-界面-)
+已实现：
 
->新用户？
->
->软件不提供内容，需要您自己手动添加，例如导入书源等。
->看看 [官方帮助文档](https://www.yuque.com/legado/wiki)，也许里面就有你要的答案。
+- **书架**：网格 / 列表切换、每行列数、按最近阅读 / 书名 / 作者 / 加入时间排序、书名作者搜索、长按操作菜单
+- **本地导入**：TXT 导入，UTF-8 / UTF-8 BOM / GBK 自动识别，按章节标题自动切分（会过滤正文中误匹配的句子）
+- **阅读器**：覆盖 / 滑动 / 滚动 / 无动画四种翻页方式；点击左右三分之一翻页、中间呼出菜单
+- **排版**：字号、行距、字距、段距、加粗可按需调整；内置 6 套排版预设（数值取自原版默认数据）
+- **阅读设置**：夜间模式、亮度调节、页眉页脚内容自由组合（无 / 书名 / 章节名 / 页码 / 进度 / 时间）
+- **目录与进度**：左侧目录抽屉、章节滑块、阅读进度自动保存
+- **整体配色**：默认 / 典雅蓝 / 黑白 / A屏黑 四套主题
+- **数据备份**：导出为单个 zip 备份包、从备份包恢复
+- **WebDAV 同步**：以单个备份包为同步单位，支持测试连接、上传、从云端恢复
 
-# Function-主要功能 [![](https://img.shields.io/badge/-Function-F5F5F5.svg)](#Function-主要功能-)
-[English](English.md)
+暂未实现（后续里程碑）：
 
-<details><summary>中文</summary>
-1.自定义书源，自己设置规则，抓取网页数据，规则简单易懂，软件内有规则说明。<br>
-2.列表书架，网格书架自由切换。<br>
-3.书源规则支持搜索及发现，所有找书看书功能全部自定义，找书更方便。<br>
-4.订阅内容,可以订阅想看的任何内容,看你想看<br>
-5.支持替换净化，去除广告替换内容很方便。<br>
-6.支持本地TXT、EPUB阅读，手动浏览，智能扫描。<br>
-7.支持高度自定义阅读界面，切换字体、颜色、背景、行距、段距、加粗、简繁转换等。<br>
-8.支持多种翻页模式，覆盖、仿真、滑动、滚动等。<br>
-9.软件开源，持续优化，无广告。
-</details>
+- 书源规则解析与在线搜索、下载（JS / CSS / XPath / JSONPath 规则引擎）
+- 仿真翻页动画、朗读、RSS、字典查询、正文替换净化
+- EPUB / UMD 等其它格式解析
+- 页脚电量显示、屏幕常亮
 
-<a href="#readme">
-    <img src="https://img.shields.io/badge/-返回顶部-orange.svg" alt="#" align="right">
-</a>
+## 数据格式
 
-# Community-交流社区 [![](https://img.shields.io/badge/-Community-F5F5F5.svg)](#Community-交流社区-)
+自定义格式，全部保存在应用私有目录（Linux 下为 `~/.local/share/wzmwayne.reader/reader`）：
 
-#### Telegram
-[![Telegram-group](https://img.shields.io/badge/Telegram-%E7%BE%A4%E7%BB%84-blue)](https://t.me/yueduguanfang) [![Telegram-channel](https://img.shields.io/badge/Telegram-%E9%A2%91%E9%81%93-blue)](https://t.me/legado_channels)
+```
+library.json                    书架索引（含 format 与 version 字段）
+settings.json                   应用设置
+reader_settings.json            阅读设置
+webdav.json                     WebDAV 配置
+books/<bookId>/chapters.json    章节目录（按字符区间定位）
+books/<bookId>/content.txt      书籍正文
+```
 
-#### Discord
-[![Discord](https://img.shields.io/discord/560731361414086666?color=%235865f2&label=Discord)](https://discord.gg/VtUfRyzRXn)
+备份包为 zip，内含 `manifest.json` 与上述数据文件；WebDAV 密码不会写入备份。
 
-#### Other
-https://www.yuque.com/legado/wiki/community
+## 构建
 
-<a href="#readme">
-    <img src="https://img.shields.io/badge/-返回顶部-orange.svg" alt="#" align="right">
-</a>
+环境要求：Flutter 3.47 stable、JDK 17+；Linux 桌面另需 `clang cmake ninja-build pkg-config libgtk-3-dev`
+以及中文字体（如 `fonts-noto-cjk`）；Android 需 Android SDK Platform 36 与 Build-Tools 36。
 
-# API [![](https://img.shields.io/badge/-API-F5F5F5.svg)](#API-)
-* 阅读3.0 提供了2种方式的API：`Web方式`和`Content Provider方式`。您可以在[这里](api.md)根据需要自行调用。 
-* 可通过url唤起阅读进行一键导入,url格式: legado://import/{path}?src={url}
-* path类型: bookSource,rssSource,replaceRule,textTocRule,httpTTS,theme,readConfig,dictRule,[addToBookshelf](/app/src/main/java/io/legado/app/ui/association/AddToBookshelfDialog.kt)
-* path类型解释: 书源,订阅源,替换规则,本地txt小说目录规则,在线朗读引擎,主题,阅读排版,添加到书架
+所有依赖均走国内镜像，构建前先加载环境变量：
 
-<a href="#readme">
-    <img src="https://img.shields.io/badge/-返回顶部-orange.svg" alt="#" align="right">
-</a>
+```bash
+source scripts/mirror_env.sh
+```
 
-# Other-其他 [![](https://img.shields.io/badge/-Other-F5F5F5.svg)](#Other-其他-)
-##### 免责声明
-https://gedoor.github.io/Disclaimer
+| 用途 | 镜像 | 实测速度 |
+| --- | --- | --- |
+| Dart / Flutter 包 | `pub.flutter-io.cn` | 11.9 MB/s |
+| Flutter 引擎与产物 | `mirrors.cloud.tencent.com/flutter` | 32 MB/s |
+| Maven / AGP / Kotlin | `maven.aliyun.com` | 13 MB/s |
+| Android SDK / Gradle 发行包 | `mirrors.cloud.tencent.com` | — |
+| 系统软件包 | `mirrors.tuna.tsinghua.edu.cn` | — |
 
-##### 阅读3.0
-* [书源规则](https://mgz0227.github.io/The-tutorial-of-Legado/)
-* [更新日志](/app/src/main/assets/updateLog.md)
-* [帮助文档](/app/src/main/assets/web/help/md/appHelp.md)
-* [web端书架](https://github.com/gedoor/legado_web_bookshelf)
-* [web端源编辑](https://github.com/gedoor/legado_web_source_editor)
+构建命令：
 
-<a href="#readme">
-    <img src="https://img.shields.io/badge/-返回顶部-orange.svg" alt="#" align="right">
-</a>
+```bash
+flutter pub get
+flutter test                      # 单元测试
+flutter build linux --release     # Linux 桌面
+flutter build apk --release       # Android
+```
 
-# Grateful-感谢 [![](https://img.shields.io/badge/-Grateful-F5F5F5.svg)](#Grateful-感谢-)
-> * org.jsoup:jsoup
-> * cn.wanghaomiao:JsoupXpath
-> * com.jayway.jsonpath:json-path
-> * com.github.gedoor:rhino-android
-> * com.squareup.okhttp3:okhttp
-> * com.github.bumptech.glide:glide
-> * org.nanohttpd:nanohttpd
-> * org.nanohttpd:nanohttpd-websocket
-> * cn.bingoogolapple:bga-qrcode-zxing
-> * com.jaredrummler:colorpicker
-> * org.apache.commons:commons-text
-> * io.noties.markwon:core
-> * io.noties.markwon:image-glide
-> * com.hankcs:hanlp
-> * com.positiondev.epublib:epublib-core
-<a href="#readme">
-    <img src="https://img.shields.io/badge/-返回顶部-orange.svg" alt="#" align="right">
-</a>
+Android 构建说明：Android 构建工具链里的 `aapt2` 官方只提供 x86-64 版本，
+在 aarch64 主机上需要 `binfmt_misc` + qemu 才能执行；x86-64 主机无此限制。
 
-# Interface-界面 [![](https://img.shields.io/badge/-Interface-F5F5F5.svg)](#Interface-界面-)
-<img src="https://github.com/gedoor/gedoor.github.io/blob/master/static/img/legado/%E9%98%85%E8%AF%BB%E7%AE%80%E4%BB%8B1.jpg" width="270"><img src="https://github.com/gedoor/gedoor.github.io/blob/master/static/img/legado/%E9%98%85%E8%AF%BB%E7%AE%80%E4%BB%8B2.jpg" width="270"><img src="https://github.com/gedoor/gedoor.github.io/blob/master/static/img/legado/%E9%98%85%E8%AF%BB%E7%AE%80%E4%BB%8B3.jpg" width="270">
-<img src="https://github.com/gedoor/gedoor.github.io/blob/master/static/img/legado/%E9%98%85%E8%AF%BB%E7%AE%80%E4%BB%8B4.jpg" width="270"><img src="https://github.com/gedoor/gedoor.github.io/blob/master/static/img/legado/%E9%98%85%E8%AF%BB%E7%AE%80%E4%BB%8B5.jpg" width="270"><img src="https://github.com/gedoor/gedoor.github.io/blob/master/static/img/legado/%E9%98%85%E8%AF%BB%E7%AE%80%E4%BB%8B6.jpg" width="270">
+## 目录结构
 
-<a href="#readme">
-    <img src="https://img.shields.io/badge/-返回顶部-orange.svg" alt="#" align="right">
-</a>
+```
+lib/
+  main.dart                 应用入口与主题装配
+  models/                   数据模型（书籍、章节、阅读设置、应用设置）
+  services/                 存储、导入、备份、WebDAV、同步
+  state/                    全局状态（书架、设置、同步）
+  reader/                   阅读器界面与分页引擎
+  pages/                    书架页、设置页、WebDAV 页
+  widgets/                  通用组件
+  theme/                    主题配色与中文字形回退
+test/                       单元测试（导入切分、分页、备份往返）
+scripts/mirror_env.sh       国内镜像环境变量
+```
+
+## 许可证
+
+GPL-3.0。界面设计与排版参数参考自原 Legado 项目，按其开源许可保留原始版权声明，
+详见 [LICENSE](LICENSE)。
