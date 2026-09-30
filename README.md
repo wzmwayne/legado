@@ -41,34 +41,40 @@ books/<bookId>/content.txt      书籍正文
 
 ## 构建
 
-环境要求：Flutter 3.47 stable、JDK 17+；Linux 桌面另需 `clang cmake ninja-build pkg-config libgtk-3-dev`
-以及中文字体（如 `fonts-noto-cjk`）；Android 需 Android SDK Platform 36 与 Build-Tools 36。
+构建统一由 GitHub Actions 完成（`.github/workflows/build.yml`）。运行器为 x86-64，
+依赖全部使用官方源（pub.dev、`google()`/`mavenCentral()`、`services.gradle.org`），
+项目内不含任何镜像配置。产物在 Actions 运行页面的 Artifacts 中下载：
 
-所有依赖均走国内镜像，构建前先加载环境变量：
+| 任务 | 产物 |
+| --- | --- |
+| `analyze` | `flutter analyze` + `flutter test` 门禁 |
+| `android` | `reader-android-apk`（Release APK） |
+| `linux` | `reader-linux-x64.tar.gz` |
 
-```bash
-source scripts/mirror_env.sh
-```
+工作流缓存了 Flutter SDK、pub 依赖、Gradle 依赖与构建缓存、Android SDK 组件
+（NDK / platform-36 / build-tools-36）以及 Gradle 发行包，二次编译无需重复下载。
 
-| 用途 | 镜像 | 实测速度 |
-| --- | --- | --- |
-| Dart / Flutter 包 | `pub.flutter-io.cn` | 11.9 MB/s |
-| Flutter 引擎与产物 | `mirrors.cloud.tencent.com/flutter` | 32 MB/s |
-| Maven / AGP / Kotlin | `maven.aliyun.com` | 13 MB/s |
-| Android SDK / Gradle 发行包 | `mirrors.cloud.tencent.com` | — |
-| 系统软件包 | `mirrors.tuna.tsinghua.edu.cn` | — |
+本地构建（可选）需要 x86-64 主机：Android 工具链中的 `aapt2`、`cmake` 官方只提供
+x86-64 版本，aarch64 主机需自行提供 binfmt/qemu 模拟。
 
-构建命令：
+环境要求：Flutter 3.47.0 stable、JDK 17+（CI 使用 21）；Linux 桌面另需 `clang cmake
+ninja-build pkg-config libgtk-3-dev` 与中文字体（如 `fonts-noto-cjk`）；Android 需
+SDK Platform 36、Build-Tools 36.0.0 与 NDK 28.2.13676358。
 
 ```bash
 flutter pub get
-flutter test                      # 单元测试
-flutter build linux --release     # Linux 桌面
-flutter build apk --release       # Android
+flutter analyze
+flutter test
+flutter build apk --release      # Android，需 x86-64 主机
+flutter build linux --release    # Linux 桌面
 ```
 
-Android 构建说明：Android 构建工具链里的 `aapt2` 官方只提供 x86-64 版本，
-在 aarch64 主机上需要 `binfmt_misc` + qemu 才能执行；x86-64 主机无此限制。
+## 支持的平台
+
+| 平台 | 最低版本 |
+| --- | --- |
+| Android | 7.0（API 24，取自 `flutter.minSdkVersion`；compileSdk / targetSdk 36） |
+| Linux 桌面 | 取决于构建环境的 glibc（CI 使用最新 Ubuntu LTS） |
 
 ## 目录结构
 
@@ -83,7 +89,7 @@ lib/
   widgets/                  通用组件
   theme/                    主题配色与中文字形回退
 test/                       单元测试（导入切分、分页、备份往返）
-scripts/mirror_env.sh       国内镜像环境变量
+.github/workflows/build.yml 分析与构建工作流（Android APK、Linux 桌面）
 ```
 
 ## 许可证

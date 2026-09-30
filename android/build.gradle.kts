@@ -1,6 +1,5 @@
 allprojects {
     repositories {
-        // 实际请求由 scripts/gradle_mirror.gradle 重定向到阿里云镜像
         google()
         mavenCentral()
     }
