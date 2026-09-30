@@ -41,7 +41,7 @@ books/<bookId>/content.txt      书籍正文
 
 ## 构建
 
-构建统一由 GitHub Actions 完成（`.github/workflows/build.yml`）。运行器为 x86-64，
+构建统一由 GitHub Actions 完成（`.github/workflows/ci.yml`，**仅手动触发**，在 Actions 页面 Run workflow 时选择目标）。运行器为 x86-64，
 依赖全部使用官方源（pub.dev、`google()`/`mavenCentral()`、`services.gradle.org`），
 项目内不含任何镜像配置。产物在 Actions 运行页面的 Artifacts 中下载：
 
@@ -89,7 +89,7 @@ lib/
   widgets/                  通用组件
   theme/                    主题配色与中文字形回退
 test/                       单元测试（导入切分、分页、备份往返）
-.github/workflows/build.yml 分析与构建工作流（Android APK、Linux 桌面）
+.github/workflows/ci.yml 分析与构建工作流（Android APK、Linux 桌面）
 ```
 
 ## 许可证
